@@ -1,0 +1,5 @@
+text
+/db-dev/
+*.log
+target/
+.mvn/

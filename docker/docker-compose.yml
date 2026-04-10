@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: maydls-postgres-dev
+    environment:
+      POSTGRES_DB: maydls
+      POSTGRES_USER: maydls_user
+      POSTGRES_PASSWORD: maydls_pass
+    ports:
+      - "5443:5432"
+    volumes:
+      - ../db-dev:/var/lib/postgresql/data
+    restart: unless-stopped
