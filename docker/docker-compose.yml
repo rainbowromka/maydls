@@ -13,3 +13,13 @@ services:
     volumes:
       - ../db-dev:/var/lib/postgresql/data
     restart: unless-stopped
+
+  yt-dlp:
+    build:
+      context: .
+      dockerfile: Dockerfile.yt-dlp
+    container_name: maydls-yt-dlp
+    volumes:
+      - ../downloads:/downloads
+    entrypoint: [ "tail", "-f", "/dev/null" ]  # Keep container alive
+    restart: unless-stopped
