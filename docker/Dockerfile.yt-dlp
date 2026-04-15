@@ -1,11 +1,19 @@
 FROM python:3.11-slim
 
+# Install ffmpeg and Deno
 RUN apt-get update && apt-get install -y \
     ffmpeg \
+    curl \
+    unzip \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir yt-dlp
+# Install Deno (recommended JavaScript runtime for yt-dlp-ejs)
+RUN curl -fsSL https://deno.land/install.sh | sh && \
+    ln -s /root/.deno/bin/deno /usr/local/bin/deno
+
+# Install yt-dlp with EJS support
+RUN pip install --no-cache-dir yt-dlp yt-dlp-ejs
 
 WORKDIR /downloads
 
