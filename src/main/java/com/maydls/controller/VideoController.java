@@ -1,9 +1,11 @@
 package com.maydls.controller;
 
+import com.maydls.dto.VideoInfoResponseDTO;
 import com.maydls.entity.Video;
 import com.maydls.repository.VideoRepository;
 import com.maydls.service.YtDlpService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +25,30 @@ public class VideoController
         return videoRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    @GetMapping("/info")
-    public String getVideoInfo(
-        @RequestParam String url)
-    throws Exception
+    @GetMapping(value = "/info", produces = "application/json")
+    public ResponseEntity<VideoInfoResponseDTO> getVideoInfoParsed(@RequestParam String url) {
+        try {
+            VideoInfoResponseDTO info = ytDlpService.getVideoInfoParsed(url);
+            return ResponseEntity.ok(info);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PostMapping("/download")
+    public ResponseEntity<?> downloadVideo(
+        @RequestParam String url,
+        @RequestParam String formatId)
     {
-        return ytDlpService.getVideoInfo(url);
+        try {
+            Video saved = ytDlpService.downloadVideoToDatabase(url, formatId);
+            return ResponseEntity.ok(saved);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Download failed: " + e.getMessage());
+        }
     }
 }
