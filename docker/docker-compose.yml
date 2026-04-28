@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15
@@ -21,5 +19,25 @@ services:
     container_name: maydls-yt-dlp
     volumes:
       - ../downloads:/downloads
-    entrypoint: [ "tail", "-f", "/dev/null" ]  # Keep container alive
+    entrypoint: [ "tail", "-f", "/dev/null" ]
     restart: unless-stopped
+
+      # NEW: React development container
+  react:
+    build:
+      context: .
+      dockerfile: Dockerfile.react
+    container_name: maydls-react-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../maydls-web:/app
+      - /app/node_modules  # Anonymous volume to keep node_modules inside container
+      - /app/.pnpm-store  # Optional: persist pnpm store
+    working_dir: /app
+    # Auto-start the dev server
+    command: sh -c "pnpm install && pnpm run dev"
+    restart: unless-stopped
+    # For Linux users - uncomment if needed:
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"

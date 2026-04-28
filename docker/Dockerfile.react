@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+# Install pnpm globally
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+# Install git (needed for some npm packages)
+RUN apk add --no-cache git
+
+# Expose Vite dev server port
+EXPOSE 5173
+
+# Start script will be defined in docker-compose.yml
