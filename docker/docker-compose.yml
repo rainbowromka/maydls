@@ -32,12 +32,6 @@ services:
       - "5173:5173"
     volumes:
       - ../maydls-web:/app
-      - /app/node_modules  # Anonymous volume to keep node_modules inside container
-      - /app/.pnpm-store  # Optional: persist pnpm store
     working_dir: /app
-    # Auto-start the dev server
-    command: sh -c "pnpm install && pnpm run dev"
+    command: sh -c "pnpm install && pnpm dev"
     restart: unless-stopped
-    # For Linux users - uncomment if needed:
-    # extra_hosts:
-    #   - "host.docker.internal:host-gateway"
